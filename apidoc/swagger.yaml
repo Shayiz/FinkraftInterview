@@ -1,0 +1,321 @@
+openapi: 3.0.0
+info:
+  title: Booking API
+  description: API for managing bookings and vendors.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Local server
+
+paths:
+  /vendor/create-vendor:
+    post:
+      summary: Create a new vendor
+      description: Adds a new vendor to the database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vendorName:
+                  type: string
+                  example: "Vendor Name"
+                vendorLocation:
+                  type: string
+                  example: "Vendor Location"
+              required:
+                - vendorName
+                - vendorLocation
+      responses:
+        200:
+          description: Vendor created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "uuid"
+                      vendorName:
+                        type: string
+                        example: "Vendor Name"
+                      vendorLocation:
+                        type: string
+                        example: "Vendor Location"
+        400:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid input"
+                  code:
+                    type: string
+                    example: "ERROR_CODE"
+
+  /vendor/get-vendor:
+    get:
+      summary: Get list of vendors
+      description: Fetches a list of all vendors.
+      responses:
+        200:
+          description: A list of vendors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "uuid"
+                        vendorName:
+                          type: string
+                          example: "Vendor Name"
+                        vendorLocation:
+                          type: string
+                          example: "Vendor Location"
+
+  /booking/create-booking:
+    post:
+      summary: Create a new booking
+      description: Adds a new booking to the database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customerName:
+                  type: string
+                  example: "John Doe"
+                bookingDate:
+                  type: string
+                  format: date
+                  example: "2025-01-14"
+                amount:
+                  type: number
+                  example: 100
+                vendorId:
+                  type: string
+                  example: "uuid"
+              required:
+                - customerName
+                - bookingDate
+                - amount
+                - vendorId
+      responses:
+        200:
+          description: Booking created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "uuid"
+                      customerName:
+                        type: string
+                        example: "John Doe"
+                      bookingDate:
+                        type: string
+                        format: date
+                        example: "2025-01-14"
+                      amount:
+                        type: number
+                        example: 100
+                      vendorId:
+                        type: string
+                        example: "uuid"
+        400:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid input"
+                  code:
+                    type: string
+                    example: "ERROR_CODE"
+
+  /booking/get-booking:
+    get:
+      summary: Get bookings
+      description: Fetches a list of bookings filtered by date or vendor name.
+      parameters:
+        - name: date
+          in: query
+          description: Filter bookings by date
+          schema:
+            type: string
+            format: date
+            example: "2025-01-14"
+        - name: vendor
+          in: query
+          description: Filter bookings by vendor name
+          schema:
+            type: string
+            example: "Vendor Name"
+      responses:
+        200:
+          description: A list of bookings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "uuid"
+                        customerName:
+                          type: string
+                          example: "John Doe"
+                        bookingDate:
+                          type: string
+                          format: date
+                          example: "2025-01-14"
+                        amount:
+                          type: number
+                          example: 100
+                        vendorId:
+                          type: string
+                          example: "uuid"
+                        vendorName:
+                          type: string
+                          example: "Vendor Name"
+
+  /booking/{id}:
+    get:
+      summary: Get booking by ID
+      description: Fetches details of a single booking using the booking ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Booking ID
+          schema:
+            type: string
+            example: "uuid"
+      responses:
+        200:
+          description: Booking details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "uuid"
+                      customerName:
+                        type: string
+                        example: "John Doe"
+                      bookingDate:
+                        type: string
+                        format: date
+                        example: "2025-01-14"
+                      amount:
+                        type: number
+                        example: 100
+                      vendorId:
+                        type: string
+                        example: "uuid"
+                      vendorName:
+                        type: string
+                        example: "Vendor Name"
+        404:
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Booking not found"
+                  code:
+                    type: string
+                    example: "NOT_FOUND"
+    delete:
+      summary: Delete booking by ID
+      description: Deletes a booking using the booking ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Booking ID
+          schema:
+            type: string
+            example: "uuid"
+      responses:
+        200:
+          description: Booking deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: "Booking deleted successfully"
+        404:
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Booking not found"
+                  code:
+                    type: string
+                    example: "NOT_FOUND"
